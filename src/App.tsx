@@ -11,6 +11,7 @@ function App() {
   const [dealerHand, setDealerHand] = useState<ICard[]>([]);
   const [dealerTotal, setDealerTotal] = useState<number>(0);
   const [isGameStarted, setIsGameStarted] = useState<boolean>(false);
+  const [isPlayerTurn, setIsPlayerTurn] = useState<boolean>(true)
 
   useEffect(() => {
     setPlayerTotal(calculateTotalValue(playerHand));
@@ -32,15 +33,15 @@ function App() {
     const playerCards: ICard[] = [dealCard(), dealCard()];
     setPlayerHand(playerCards);
 
-    const dealerCards: ICard[] = [dealCard(), dealCard()];
+    const dealerCards: ICard[] = [dealCard(), dealCard(true)];
     setDealerHand(dealerCards);
   };
 
-  const dealCard = (): ICard => {
+  const dealCard = (facedown = false): ICard => {
     const card: ICard = {
       suit: suits[Math.floor(Math.random() * suits.length)],
       value: generateRandom(2, 11),
-      isFaceDown: false,
+      isFaceDown: facedown,
     };
     return card;
   };
@@ -51,7 +52,12 @@ function App() {
   };
 
   const calculateTotalValue = (cards: ICard[]): number => {
-    return cards.reduce((total, card) => total + card.value, 0);
+    return cards.reduce((total, card) => {
+      if (!card.isFaceDown) {
+        return total + card.value;
+      }
+      return total;
+    }, 0);
   };
 
   const hit = () => {

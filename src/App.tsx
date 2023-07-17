@@ -1,33 +1,66 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import Hand from './components/Hand';
+import PlayerControls from './components/PlayerControls';
+import { ICard } from './interfaces/ICard';
+import { useState, useEffect } from 'react';
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const suits: string[] = ["Hearts", "Diamonds", "Spades", "Clubs"]
+  const [playerDeck, setPlayerDeck] = useState<ICard[]>([])
+  const [playerTotal, setPlayerTotal] = useState<number>(0)
+  const [isGameStarted, setIsGameStarted] = useState<boolean>(false)
+
+  useEffect(() => {
+    calculateTotalValue()
+  }, [playerDeck.length])
+
+  const generateRandom = (min: number = 0, max: number = 100) => {
+    let difference = max - min;
+    let rand = Math.random();
+    rand = Math.floor(rand * difference);
+    rand = rand + min;
+    return rand;
+  }
+
+  const dealInitialCards = () => {
+    let cards: ICard[] = [
+      dealCard(),
+      dealCard()
+    ]
+    setPlayerDeck(cards)
+  }
+
+  const dealCard = (): ICard => {
+    const card = {
+      suit: suits[Math.floor(Math.random() * suits.length)],
+      value: generateRandom(2, 11),
+      isFaceDown: false
+    }
+    return card
+  }
+
+  const startGame = () => {
+    setIsGameStarted(true)
+    dealInitialCards()
+  }
+
+  const calculateTotalValue = () => {
+    let count = 0
+    playerDeck.forEach(card => {
+      count+=card.value
+    })
+    setPlayerTotal(count)
+  }
+
+  if (!isGameStarted) {
+    return <button onClick={startGame}>Start</button>
+  }
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <PlayerControls />
+      <p>{playerTotal}</p>
+      <Hand cards={playerDeck} />
     </>
   )
 }

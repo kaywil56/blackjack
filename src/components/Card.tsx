@@ -1,7 +1,7 @@
 import { ICard } from "../interfaces/ICard"
 
 interface ICardProps{
-    card: ICard
+    card: ICard,
 }
 
 const Card = ({ card }: ICardProps) => {

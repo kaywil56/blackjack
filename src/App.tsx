@@ -11,7 +11,8 @@ function App() {
   const [isGameStarted, setIsGameStarted] = useState<boolean>(false)
 
   useEffect(() => {
-    calculateTotalValue()
+    const count: number = calculateTotalValue(playerDeck)
+    setPlayerTotal(count)
   }, [playerDeck.length])
 
   const generateRandom = (min: number = 0, max: number = 100) => {
@@ -23,11 +24,11 @@ function App() {
   }
 
   const dealInitialCards = () => {
-    let cards: ICard[] = [
+    let playerCards: ICard[] = [
       dealCard(),
       dealCard()
     ]
-    setPlayerDeck(cards)
+    setPlayerDeck(playerCards)
   }
 
   const dealCard = (): ICard => {
@@ -44,13 +45,22 @@ function App() {
     dealInitialCards()
   }
 
-  const calculateTotalValue = () => {
-    let count = 0
-    playerDeck.forEach(card => {
+  const calculateTotalValue = (cards: ICard[]): number => {
+    let count: number = 0
+    cards.forEach(card => {
       count+=card.value
     })
-    setPlayerTotal(count)
+    return count
   }
+
+  const hit = () => {
+    const newCard: ICard = dealCard() 
+    setPlayerDeck(prevPlayerDeck => [...prevPlayerDeck, newCard])
+  }
+
+  // const stand = () => {
+    
+  // }
 
   if (!isGameStarted) {
     return <button onClick={startGame}>Start</button>
@@ -58,7 +68,7 @@ function App() {
 
   return (
     <>
-      <PlayerControls />
+      <PlayerControls hit={hit} />
       <p>{playerTotal}</p>
       <Hand cards={playerDeck} />
     </>

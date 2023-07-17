@@ -1,6 +1,10 @@
-const PlayerControls = () => {
+interface IPlayerControlsProps{
+    hit: () => void
+}
+
+const PlayerControls = ({ hit }: IPlayerControlsProps) => {
     return <div>
-        <button>Hit</button>
+        <button onClick={hit}>Hit</button>
         <button>Stand</button>
     </div>
 }

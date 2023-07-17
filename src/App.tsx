@@ -1,78 +1,77 @@
 import Hand from './components/Hand';
-import PlayerControls from './components/PlayerControls';
 import { ICard } from './interfaces/ICard';
+import PlayerControls from './components/PlayerControls';
 import { useState, useEffect } from 'react';
-import './App.css'
+import './App.css';
 
 function App() {
-  const suits: string[] = ["Hearts", "Diamonds", "Spades", "Clubs"]
-  const [playerDeck, setPlayerDeck] = useState<ICard[]>([])
-  const [playerTotal, setPlayerTotal] = useState<number>(0)
-  const [isGameStarted, setIsGameStarted] = useState<boolean>(false)
+  const suits = ["Hearts", "Diamonds", "Spades", "Clubs"];
+  const [playerHand, setPlayerHand] = useState<ICard[]>([]);
+  const [playerTotal, setPlayerTotal] = useState<number>(0);
+  const [dealerHand, setDealerHand] = useState<ICard[]>([]);
+  const [dealerTotal, setDealerTotal] = useState<number>(0);
+  const [isGameStarted, setIsGameStarted] = useState<boolean>(false);
 
   useEffect(() => {
-    const count: number = calculateTotalValue(playerDeck)
-    setPlayerTotal(count)
-  }, [playerDeck.length])
+    setPlayerTotal(calculateTotalValue(playerHand));
+  }, [playerHand]);
 
-  const generateRandom = (min: number = 0, max: number = 100) => {
-    let difference = max - min;
+  useEffect(() => {
+    setDealerTotal(calculateTotalValue(dealerHand));
+  }, [dealerHand]);
+
+  const generateRandom = (min = 0, max = 100) => {
+    const difference = max - min;
     let rand = Math.random();
     rand = Math.floor(rand * difference);
     rand = rand + min;
     return rand;
-  }
+  };
 
   const dealInitialCards = () => {
-    let playerCards: ICard[] = [
-      dealCard(),
-      dealCard()
-    ]
-    setPlayerDeck(playerCards)
-  }
+    const playerCards: ICard[] = [dealCard(), dealCard()];
+    setPlayerHand(playerCards);
+
+    const dealerCards: ICard[] = [dealCard(), dealCard()];
+    setDealerHand(dealerCards);
+  };
 
   const dealCard = (): ICard => {
-    const card = {
+    const card: ICard = {
       suit: suits[Math.floor(Math.random() * suits.length)],
       value: generateRandom(2, 11),
-      isFaceDown: false
-    }
-    return card
-  }
+      isFaceDown: false,
+    };
+    return card;
+  };
 
   const startGame = () => {
-    setIsGameStarted(true)
-    dealInitialCards()
-  }
+    setIsGameStarted(true);
+    dealInitialCards();
+  };
 
   const calculateTotalValue = (cards: ICard[]): number => {
-    let count: number = 0
-    cards.forEach(card => {
-      count+=card.value
-    })
-    return count
-  }
+    return cards.reduce((total, card) => total + card.value, 0);
+  };
 
   const hit = () => {
-    const newCard: ICard = dealCard() 
-    setPlayerDeck(prevPlayerDeck => [...prevPlayerDeck, newCard])
-  }
-
-  // const stand = () => {
-    
-  // }
+    const newCard: ICard = dealCard();
+    setPlayerHand(prevPlayerHand => [...prevPlayerHand, newCard]);
+  };
 
   if (!isGameStarted) {
-    return <button onClick={startGame}>Start</button>
+    return <button onClick={startGame}>Start</button>;
   }
 
   return (
     <>
+      <Hand cards={dealerHand} />
+      <p>Dealer count: {dealerTotal}</p>
       <PlayerControls hit={hit} />
-      <p>{playerTotal}</p>
-      <Hand cards={playerDeck} />
+      <p>Player count: {playerTotal}</p>
+      <Hand cards={playerHand} />
     </>
-  )
+  );
 }
 
-export default App
+export default App;

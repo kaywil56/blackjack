@@ -1,11 +1,13 @@
-interface IPlayerControlsProps{
-    hit: () => void
+interface IPlayerControlsProps {
+    hit: () => void,
+    stand: () => void,
+    isPlayerTurn: boolean
 }
 
-const PlayerControls = ({ hit }: IPlayerControlsProps) => {
+const PlayerControls = ({ hit, stand, isPlayerTurn }: IPlayerControlsProps) => {
     return <div>
-        <button onClick={hit}>Hit</button>
-        <button>Stand</button>
+        <button disabled={!isPlayerTurn} onClick={hit}>Hit</button>
+        <button disabled={!isPlayerTurn} onClick={stand}>Stand</button>
     </div>
 }
 

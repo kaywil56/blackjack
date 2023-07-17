@@ -1,25 +1,18 @@
 import Hand from './components/Hand';
 import { ICard } from './interfaces/ICard';
 import PlayerControls from './components/PlayerControls';
-import { useState, useEffect } from 'react';
+import Results from './components/Results';
+import { useState } from 'react';
 import './App.css';
 
 function App() {
   const suits = ["Hearts", "Diamonds", "Spades", "Clubs"];
+
   const [playerHand, setPlayerHand] = useState<ICard[]>([]);
-  const [playerTotal, setPlayerTotal] = useState<number>(0);
   const [dealerHand, setDealerHand] = useState<ICard[]>([]);
-  const [dealerTotal, setDealerTotal] = useState<number>(0);
   const [isGameStarted, setIsGameStarted] = useState<boolean>(false);
   const [isPlayerTurn, setIsPlayerTurn] = useState<boolean>(true)
-
-  useEffect(() => {
-    setPlayerTotal(calculateTotalValue(playerHand));
-  }, [playerHand]);
-
-  useEffect(() => {
-    setDealerTotal(calculateTotalValue(dealerHand));
-  }, [dealerHand]);
+  const [result, setResult] = useState<string>("")
 
   const generateRandom = (min = 0, max = 100) => {
     const difference = max - min;
@@ -36,6 +29,12 @@ function App() {
     const dealerCards: ICard[] = [dealCard(), dealCard(true)];
     setDealerHand(dealerCards);
   };
+
+  const handleDealerTurn = () => {
+    // Reveal facedown card
+    const updatedDealerHand = dealerHand.map(card => ({ ...card, isFaceDown: false }))
+    setDealerHand(updatedDealerHand)
+  }
 
   const dealCard = (facedown = false): ICard => {
     const card: ICard = {
@@ -65,16 +64,25 @@ function App() {
     setPlayerHand(prevPlayerHand => [...prevPlayerHand, newCard]);
   };
 
+  const stand = () => {
+    setIsPlayerTurn(false)
+    handleDealerTurn()
+  }
+
   if (!isGameStarted) {
     return <button onClick={startGame}>Start</button>;
+  }
+
+  if (result) {
+    return <Results result={result} setResult={setResult} />
   }
 
   return (
     <>
       <Hand cards={dealerHand} />
-      <p>Dealer count: {dealerTotal}</p>
-      <PlayerControls hit={hit} />
-      <p>Player count: {playerTotal}</p>
+      <p>Dealer count: {calculateTotalValue(dealerHand)}</p>
+      <PlayerControls hit={hit} stand={stand} isPlayerTurn={isPlayerTurn} />
+      <p>Player count: {calculateTotalValue(playerHand)}</p>
       <Hand cards={playerHand} />
     </>
   );

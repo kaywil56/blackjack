@@ -1,17 +1,17 @@
 import { useEffect, SetStateAction } from "react"
-import { Result } from "../App";
+import { GameState } from "../App"
 
-interface IResultsProps {
+interface IResultProps{
     result: string,
-    setResult: React.Dispatch<SetStateAction<Result | undefined>>;
+    setGameState: React.Dispatch<SetStateAction<GameState>>
 }
 
-const Results = ({ result, setResult }: IResultsProps) => {
+const Results = ({ result, setGameState }: IResultProps) => {
     const handleTimeOut = () => {
-        setResult(undefined)
+        setGameState(GameState.bet)
     }
     useEffect(() => {
-        const timer = setTimeout(() => handleTimeOut, 3000);
+        const timer = setTimeout(() => handleTimeOut(), 3000);
         return () => clearTimeout(timer);
     }, []);
 

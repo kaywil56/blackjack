@@ -5,24 +5,20 @@ import Results from './components/Results';
 import { useState, useEffect } from 'react';
 import './App.css';
 
-export enum Result {
-  playerBust = "You Bust.",
-  dealerBust = "Dealer Bust.",
-  playerWin = "You Win.",
-  dealerWin = "Dealers Wins.",
-  push = "Push.",
+export enum GameState {
+  bet,
+  playerTurn,
+  dealerTurn,
+  showResults,
 }
 
 function App() {
-  enum GameState {
-    playerTurn,
-    dealerTurn,
-    init
-  }
-
-  enum Deal {
-    player,
-    dealer
+  enum Result {
+    playerBust = "You Bust.",
+    dealerBust = "Dealer Bust.",
+    playerWin = "You Win.",
+    dealerWin = "Dealers Wins.",
+    push = "Push.",
   }
 
   const suits = ["Hearts", "Diamonds", "Spades", "Clubs"];
@@ -31,8 +27,8 @@ function App() {
   const [playerHand, setPlayerHand] = useState<ICard[]>([]);
   const [dealerHand, setDealerHand] = useState<ICard[]>([]);
   const [isGameStarted, setIsGameStarted] = useState<boolean>(false);
-  const [gameState, setGameState] = useState<GameState>(GameState.init)
-  const [result, setResult] = useState<Result | undefined>()
+  const [gameState, setGameState] = useState<GameState>(GameState.bet)
+  const [result, setResult] = useState<Result>(Result.dealerWin)
 
   useEffect(() => {
     if (gameState === GameState.dealerTurn) {
@@ -43,18 +39,16 @@ function App() {
         setDealerHand(prevDealerHand => [...prevDealerHand, newCard])
       }
     }
-  }, [dealerHand.length])
-
+  }, [dealerHand])
 
   useEffect(() => {
     if (gameState === GameState.playerTurn) {
-      console.log("enum working")
       if (calculateTotalValue(playerHand) > 21) {
         setResult(Result.playerBust)
-        console.log("bust")
+        setGameState(GameState.showResults)
       }
     }
-  }, [playerHand.length])
+  }, [playerHand])
 
   const generateRandom = (min = 0, max = 100) => {
     const difference = max - min;
@@ -64,14 +58,17 @@ function App() {
     return rand;
   };
 
+  const placeBet = () => {
+    dealInitialCards()
+    setGameState(GameState.playerTurn)
+  }
+
   const dealInitialCards = () => {
     const playerCards: ICard[] = [dealCard(), dealCard()];
     setPlayerHand(playerCards);
 
     const dealerCards: ICard[] = [dealCard(), dealCard(true)];
     setDealerHand(dealerCards);
-
-    setGameState(GameState.playerTurn)
   };
 
   const handleDealerTurn = () => {
@@ -92,11 +89,6 @@ function App() {
       isFaceDown: facedown,
     };
     return card;
-  };
-
-  const startGame = () => {
-    setIsGameStarted(true);
-    dealInitialCards();
   };
 
   const calculateTotalValue = (cards: ICard[]): number => {
@@ -133,14 +125,19 @@ function App() {
     else {
       setResult(Result.push);
     }
+    setGameState(GameState.showResults)
   }
 
   if (!isGameStarted) {
-    return <button onClick={startGame}>Start</button>;
+    return <button onClick={() => setIsGameStarted(true)}>Start</button>
   }
 
-  if (result) {
-    return <Results result={result} setResult={setResult} />
+  if (gameState === GameState.bet) {
+    return <button onClick={placeBet}>Place bet</button>
+  }
+
+  if (gameState === GameState.showResults) {
+    return <Results result={result} setGameState={setGameState} />
   }
 
   return (

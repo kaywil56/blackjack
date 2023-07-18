@@ -136,10 +136,6 @@ function App() {
     return <button onClick={placeBet}>Place bet</button>
   }
 
-  if (gameState === GameState.showResults) {
-    return <Results result={result} setGameState={setGameState} />
-  }
-
   return (
     <>
       <Hand cards={dealerHand} />
@@ -147,6 +143,7 @@ function App() {
       <PlayerControls hit={hit} stand={stand} isPlayerTurn={gameState === GameState.playerTurn} />
       <p>Player count: {calculateTotalValue(playerHand)}</p>
       <Hand cards={playerHand} />
+      {gameState === GameState.showResults && <Results result={result} setGameState={setGameState} />}
     </>
   );
 }

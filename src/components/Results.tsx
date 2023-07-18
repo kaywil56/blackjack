@@ -1,5 +1,6 @@
 import { useEffect, SetStateAction } from "react"
 import { GameState } from "../App"
+import './Results.css'
 
 interface IResultProps{
     result: string,
@@ -15,7 +16,10 @@ const Results = ({ result, setGameState }: IResultProps) => {
         return () => clearTimeout(timer);
     }, []);
 
-    return <p>{result}</p>
+    return <div className="overlay">
+    <h1>Results</h1>
+    <p>{result}</p>
+    </div>
 }
 
 export default Results

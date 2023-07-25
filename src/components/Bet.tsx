@@ -1,11 +1,19 @@
 import "./Bet.css";
+import { useState } from "react";
 
-interface BetProps {
+interface IBetProps {
   placeBet: () => void;
   chips: number;
 }
 
-const Bet = ({ placeBet, chips }: BetProps) => {
+interface IChip {
+  id: number;
+  color: string;
+  value: number;
+}
+
+const Bet = ({ placeBet, chips }: IBetProps) => {
+  const [placedChips, setPlacedChips] = useState<IChip[]>([]);
   const pokerChips = [
     { id: 1, color: "#FFFFFF", value: 1 },
     { id: 2, color: "#FF0000", value: 5 },
@@ -21,33 +29,50 @@ const Bet = ({ placeBet, chips }: BetProps) => {
     { id: 12, color: "#A52A2A", value: 5000 },
   ];
 
+  const placeChip = (chip: IChip) => {
+    setPlacedChips(prevPlacedChips => [...prevPlacedChips, chip])
+  }
+
+  const removeChip = (selectedChip: IChip) => {
+    const updatedPlacedChips = [...placedChips]
+    const selectedChipIdx = updatedPlacedChips.findIndex((chip) => chip.id === selectedChip.id);
+    updatedPlacedChips.splice(selectedChipIdx, 1);
+    setPlacedChips(updatedPlacedChips);
+  }
+
   return (
     <div id="bet-area">
       <p>Bank: {chips}</p>
-      <div id="place-chips"></div>
+      <ul id="placed-chips">
+        {placedChips.map((chip) => {
+          return (
+            <li onClick={() => removeChip(chip)} key={`poker-chip-${chip.id}`}>
+              <div
+                className="poker-chip placed-chip"
+                style={{
+                  backgroundColor: chip.color,
+                  color: chip.id === 1 ? "#333" : "white",
+                }}
+              >
+                {chip.value}
+              </div>
+            </li>
+          );
+        })}
+      </ul>
       <ul id="poker-chip-list">
         {pokerChips.map((chip) => (
-          <>
-            {chip.id === 1 ? (
-              <li key={`poker-chip-${chip.id}`}>
-                <div
-                  className="poker-chip"
-                  style={{ backgroundColor: chip.color, color: "#333" }}
-                >
-                  {chip.value}
-                </div>
-              </li>
-            ) : (
-              <li key={`poker-chip-${chip.id}`}>
-                <div
-                  className="poker-chip"
-                  style={{ backgroundColor: chip.color }}
-                >
-                  {chip.value}
-                </div>
-              </li>
-            )}
-          </>
+          <li onClick={() => placeChip(chip)} key={`poker-chip-${chip.id}`}>
+            <div
+              className="poker-chip"
+              style={{
+                backgroundColor: chip.color,
+                color: chip.id === 1 ? "#333" : "white",
+              }}
+            >
+              {chip.value}
+            </div>
+          </li>
         ))}
       </ul>
 

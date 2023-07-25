@@ -19,6 +19,14 @@
     padding: 0  
 }
 
-#place-chips{
+#placed-chips{
+    list-style: none;
+    padding: 0;
+    position: relative;
+}
 
+.placed-chip{
+    position: absolute;
+    top: 50%;
+    left: 50%;
 }

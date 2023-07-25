@@ -11,7 +11,7 @@ interface IHandProps {
   gameState: GameState
 }
 
-const Hand = ({ cards, setDealerAnimationDone, gameState }: IHandProps) => {
+const Hand = ({ cards, gameState }: IHandProps) => {
   // const [windowSize, setWindowSize] = useState<number[]>([]);
 
   // const readyCards = windowSize.length > 0 ? cards : []

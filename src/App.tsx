@@ -2,6 +2,7 @@ import Hand from './components/Hand';
 import { ICard } from './interfaces/ICard';
 import PlayerControls from './components/PlayerControls';
 import Results from './components/Results';
+import Bet from './components/Bet';
 import { useState, useEffect } from 'react';
 import './App.css';
 
@@ -26,10 +27,10 @@ function App() {
 
   const [playerHand, setPlayerHand] = useState<ICard[]>([]);
   const [dealerHand, setDealerHand] = useState<ICard[]>([]);
-  const [dealerAnimationDone, setDealerAnimationDone] = useState<boolean>(false)
   const [isGameStarted, setIsGameStarted] = useState<boolean>(false);
   const [gameState, setGameState] = useState<GameState>(GameState.bet)
   const [result, setResult] = useState<Result>(Result.dealerWin)
+  const [chips, setChips] = useState<number>(100)
 
   useEffect(() => {
     if (gameState === GameState.dealerTurn) {
@@ -134,16 +135,16 @@ function App() {
   }
 
   if (gameState === GameState.bet) {
-    return <button onClick={placeBet}>Place bet</button>
+    return <Bet chips={chips} placeBet={placeBet} />
   }
 
   return (
     <>
-      <Hand cards={dealerHand} setDealerAnimationDone={setDealerAnimationDone} gameState={gameState} />
+      <Hand cards={dealerHand} gameState={gameState} />
       <p>Dealer count: {calculateTotalValue(dealerHand)}</p>
       <PlayerControls hit={hit} stand={stand} isPlayerTurn={gameState === GameState.playerTurn} />
       <p>Player count: {calculateTotalValue(playerHand)}</p>
-      <Hand cards={playerHand} setDealerAnimationDone={setDealerAnimationDone} gameState={gameState} />
+      <Hand cards={playerHand} gameState={gameState} />
       {gameState === GameState.showResults && <Results result={result} setGameState={setGameState} />}
     </>
   );

@@ -26,6 +26,7 @@ function App() {
 
   const [playerHand, setPlayerHand] = useState<ICard[]>([]);
   const [dealerHand, setDealerHand] = useState<ICard[]>([]);
+  const [dealerAnimationDone, setDealerAnimationDone] = useState<boolean>(false)
   const [isGameStarted, setIsGameStarted] = useState<boolean>(false);
   const [gameState, setGameState] = useState<GameState>(GameState.bet)
   const [result, setResult] = useState<Result>(Result.dealerWin)
@@ -138,11 +139,11 @@ function App() {
 
   return (
     <>
-      <Hand cards={dealerHand} />
+      <Hand cards={dealerHand} setDealerAnimationDone={setDealerAnimationDone} gameState={gameState} />
       <p>Dealer count: {calculateTotalValue(dealerHand)}</p>
       <PlayerControls hit={hit} stand={stand} isPlayerTurn={gameState === GameState.playerTurn} />
       <p>Player count: {calculateTotalValue(playerHand)}</p>
-      <Hand cards={playerHand} />
+      <Hand cards={playerHand} setDealerAnimationDone={setDealerAnimationDone} gameState={gameState} />
       {gameState === GameState.showResults && <Results result={result} setGameState={setGameState} />}
     </>
   );

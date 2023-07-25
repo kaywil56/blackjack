@@ -1,4 +1,9 @@
-.hand{
-    display: flex;
+.hand {
+    margin:20px;
+    display:  grid;
+    grid-gap: 0.5rem;
     list-style-type: none;
-}
+    grid-template-columns: repeat(5, 22px);
+    transition: grid-template-columns 0.5s;
+  }
+  

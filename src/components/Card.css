@@ -9,6 +9,9 @@
   aspect-ratio: 63 / 88;
   font-family: "Lora", serif;
   color: #141414;
+  box-shadow: 2px 2px 2px 2px #00000077;
+  border-radius: 5px;
+  background-color: #ffffff;
 }
 
 .inner {

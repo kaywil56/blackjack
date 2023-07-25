@@ -29,29 +29,29 @@ const Card = ({ card }: ICardProps) => {
 
   return (
     <li>
-      <div className="card" style={{ color: getCardColor(card.suit) }}>
-        {card.isFaceDown ? (
-          <div className="pattern"></div>
-        ) : (
-          <>
-            <div className="corner tl">
-              <span className="suit">
-                {convertStringToSuitSymbol(card.suit)}
-              </span>
-              <span className="value">{card.value}</span>
-            </div>
-            <div className="inner">
-              <span>{card.value}</span>
-            </div>
-            <div className="corner br">
-              <span className="suit">
-                {convertStringToSuitSymbol(card.suit)}
-              </span>
-              <span className="value">{card.value}</span>
-            </div>
-          </>
-        )}
-      </div>
+        <div className="card" style={{ color: getCardColor(card.suit) }}>
+          {card.isFaceDown ? (
+            <div className="pattern"></div>
+          ) : (
+            <>
+              <div className="corner tl">
+                <span className="suit">
+                  {convertStringToSuitSymbol(card.suit)}
+                </span>
+                <span className="value">{card.value}</span>
+              </div>
+              <div className="inner">
+                <span>{card.value}</span>
+              </div>
+              <div className="corner br">
+                <span className="suit">
+                  {convertStringToSuitSymbol(card.suit)}
+                </span>
+                <span className="value">{card.value}</span>
+              </div>
+            </>
+          )}
+        </div>
     </li>
   );
 };

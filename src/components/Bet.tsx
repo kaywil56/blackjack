@@ -1,19 +1,17 @@
+import { IChip } from "../interfaces/IChip";
 import "./Bet.css";
-import { useState } from "react";
+import { SetStateAction } from "react";
+import { calculateTotalBet } from "../utils/calculateTotalBet";
 
 interface IBetProps {
   placeBet: () => void;
-  chips: number;
+  bank: number;
+  setBank: React.Dispatch<SetStateAction<number>>
+  placedChips: IChip[]
+  setPlacedChips: React.Dispatch<SetStateAction<IChip[]>>
 }
 
-interface IChip {
-  id: number;
-  color: string;
-  value: number;
-}
-
-const Bet = ({ placeBet, chips }: IBetProps) => {
-  const [placedChips, setPlacedChips] = useState<IChip[]>([]);
+const Bet = ({ placeBet, bank, setBank, placedChips, setPlacedChips }: IBetProps) => {
   const pokerChips = [
     { id: 1, color: "#FFFFFF", value: 1 },
     { id: 2, color: "#FF0000", value: 5 },
@@ -29,54 +27,68 @@ const Bet = ({ placeBet, chips }: IBetProps) => {
     { id: 12, color: "#A52A2A", value: 5000 },
   ];
 
-  const placeChip = (chip: IChip) => {
-    setPlacedChips(prevPlacedChips => [...prevPlacedChips, chip])
-  }
+  const placeChip = (selectedChip: IChip) => {
+    setPlacedChips((prevPlacedChips) => [...prevPlacedChips, selectedChip]);
+    setBank(prevBank => prevBank - selectedChip.value)
+  };
 
   const removeChip = (selectedChip: IChip) => {
-    const updatedPlacedChips = [...placedChips]
-    const selectedChipIdx = updatedPlacedChips.findIndex((chip) => chip.id === selectedChip.id);
+    const updatedPlacedChips = [...placedChips];
+    const selectedChipIdx = updatedPlacedChips.findIndex(
+      (chip) => chip.id === selectedChip.id
+    );
     updatedPlacedChips.splice(selectedChipIdx, 1);
     setPlacedChips(updatedPlacedChips);
-  }
+    setBank(prevBank => prevBank + selectedChip.value)
+  };
 
   return (
     <div id="bet-area">
-      <p>Bank: {chips}</p>
-      <ul id="placed-chips">
-        {placedChips.map((chip) => {
-          return (
-            <li onClick={() => removeChip(chip)} key={`poker-chip-${chip.id}`}>
-              <div
-                className="poker-chip placed-chip"
-                style={{
-                  backgroundColor: chip.color,
-                  color: chip.id === 1 ? "#333" : "white",
-                }}
+      <p>Bank: {bank}</p>
+      <div id="placed-chips-area">
+        <p>Bet: {calculateTotalBet(placedChips)}</p>
+        <ul id="placed-chips">
+          {placedChips.map((chip, idx) => {
+            return (
+              <li
+                onClick={() => removeChip(chip)}
+                key={`placed-poker-chip-${chip.id}-${idx}`}
               >
-                {chip.value}
-              </div>
-            </li>
-          );
-        })}
-      </ul>
+                <div
+                  className="poker-chip placed-chip"
+                  style={{
+                    backgroundColor: chip.color,
+                    color: chip.id === 1 ? "#333" : "white",
+                  }}
+                >
+                  {chip.value}
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
       <ul id="poker-chip-list">
         {pokerChips.map((chip) => (
-          <li onClick={() => placeChip(chip)} key={`poker-chip-${chip.id}`}>
-            <div
-              className="poker-chip"
-              style={{
-                backgroundColor: chip.color,
-                color: chip.id === 1 ? "#333" : "white",
-              }}
-            >
-              {chip.value}
-            </div>
-          </li>
+          <>
+            {chip.value <= bank && (
+              <li onClick={() => placeChip(chip)} key={`poker-chip-${chip.id}`}>
+                <div
+                  className="poker-chip"
+                  style={{
+                    backgroundColor: chip.color,
+                    color: chip.id === 1 ? "#333" : "white",
+                  }}
+                >
+                  {chip.value}
+                </div>
+              </li>
+            )}
+          </>
         ))}
       </ul>
 
-      <button onClick={placeBet}>Place bet</button>
+      <button disabled={placedChips.length === 0} onClick={placeBet}>Place bet</button>
     </div>
   );
 };

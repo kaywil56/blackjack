@@ -38,16 +38,16 @@ const Card = ({ card }: ICardProps) => {
                 <span className="suit">
                   {convertStringToSuitSymbol(card.suit)}
                 </span>
-                <span className="value">{card.value}</span>
+                <span className="value">{card.rank}</span>
               </div>
               <div className="inner">
-                <span>{card.value}</span>
+                <span>{card.rank}</span>
               </div>
               <div className="corner br">
                 <span className="suit">
                   {convertStringToSuitSymbol(card.suit)}
                 </span>
-                <span className="value">{card.value}</span>
+                <span className="value">{card.rank}</span>
               </div>
             </>
           )}

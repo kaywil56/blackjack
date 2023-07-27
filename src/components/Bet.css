@@ -1,32 +1,16 @@
-.poker-chip{
-    height: 50px;
-    width: 50px;
-    border-radius: 50px;
-    display: grid;
-    place-items: center;
-    color: white;
-    cursor: pointer;
+#poker-chip-list {
+  display: inline-grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  grid-gap: 10px;
+  column-gap: 10px;
+  row-gap: 10px;
+  list-style: none;
+  padding: 0;
 }
 
-#poker-chip-list{
-    display: inline-grid;
-    grid-template-columns: repeat(6, 1fr); 
-    grid-template-rows: repeat(2, 1fr); 
-    grid-gap: 10px; 
-    column-gap: 10px;
-    row-gap: 10px;
-    list-style: none; 
-    padding: 0  
-}
-
-#placed-chips{
-    list-style: none;
-    padding: 0;
-    position: relative;
-}
-
-.placed-chip{
-    position: absolute;
-    top: 50%;
-    left: 50%;
+#placed-chips {
+  list-style: none;
+  padding: 0;
+  position: relative;
 }

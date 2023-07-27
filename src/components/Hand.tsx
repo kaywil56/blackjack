@@ -7,7 +7,7 @@ import { useState, useEffect, SetStateAction } from "react";
 
 interface IHandProps {
   cards: ICard[]
-  setDealerAnimationDone: React.Dispatch<SetStateAction<boolean>>
+  // setDealerAnimationDone: React.Dispatch<SetStateAction<boolean>>
   gameState: GameState
 }
 

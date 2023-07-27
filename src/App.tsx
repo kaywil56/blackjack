@@ -16,31 +16,43 @@ export enum GameState {
   showResults,
 }
 
-function App() {
-  enum Result {
-    playerBust = "You Bust.",
-    dealerBust = "Dealer Bust.",
-    playerWin = "You Win.",
-    playerBlackJack = "Blackjack.",
-    dealerWin = "Dealers Wins.",
-    push = "Push.",
-  }
+enum Result {
+  playerBust = "You Bust.",
+  dealerBust = "Dealer Bust.",
+  playerWin = "You Win.",
+  playerBlackJack = "Blackjack.",
+  dealerWin = "Dealers Wins.",
+  push = "Push.",
+}
 
+function App() {
   const dealerStandsAt = 17;
+  const startingBank = 250
+  const blackjack = 21
+  const blackjackMultiplier = 1.5
 
   const [playerHand, setPlayerHand] = useState<ICard[]>([]);
   const [dealerHand, setDealerHand] = useState<ICard[]>([]);
   const [isGameStarted, setIsGameStarted] = useState<boolean>(false);
   const [gameState, setGameState] = useState<GameState>(GameState.bet);
   const [result, setResult] = useState<Result>(Result.dealerWin);
-  const [bank, setBank] = useState<number>(250);
+  const [bank, setBank] = useState<number>(startingBank);
   const [placedChips, setPlacedChips] = useState<IChip[]>([]);
   const [deck, setDeck] = useState<ICard[]>([]);
 
   useEffect(() => {
     if (gameState === GameState.dealerTurn) {
       if (calculateTotalValue(dealerHand) >= dealerStandsAt) {
-        checkWin();
+        if (hasAnAce(dealerHand) && calculateTotalValue(dealerHand) > blackjack) {
+          const updatedDealerHand = [...dealerHand];
+          const aceIdx = updatedDealerHand.findIndex(
+            (card) => card.rank === "A"
+          );
+          updatedDealerHand[aceIdx].value = 1;
+          setDealerHand(updatedDealerHand);
+        } else {
+          checkWin();
+        }
       } else {
         const newCard: ICard[] = dealCards();
         setDealerHand((prevDealerHand) => [...prevDealerHand, ...newCard]);
@@ -60,6 +72,7 @@ function App() {
           setPlayerHand(updatedPlayerHand);
         } else {
           setResult(Result.playerBust);
+          setPlacedChips([]);
           setGameState(GameState.showResults);
         }
       }
@@ -161,11 +174,11 @@ function App() {
     setDealerHand(updatedDealerHand);
   };
 
-  const dealCards = (amount = 1) => {
+  const dealCards = (amount: number = 1): ICard[] => {
     const currentDeck = [...deck];
     const drawnCards = [];
     for (let i = 0; i < amount; i++) {
-      const selectedCard = currentDeck.pop();
+      const selectedCard = currentDeck.pop()!;
       drawnCards.push(selectedCard);
     }
     setDeck(currentDeck);
@@ -175,7 +188,7 @@ function App() {
   const calculateTotalValue = (cards: ICard[]): number => {
     return cards.reduce((total, card) => {
       if (!card.isFaceDown) {
-        return total + convertStringValueToNumber(card.value);
+        return total + card.value;
       }
       return total;
     }, 0);
@@ -196,21 +209,21 @@ function App() {
   };
 
   const checkWin = () => {
-    let playerScore = calculateTotalValue(playerHand);
-    let dealerScore = calculateTotalValue(dealerHand);
+    const playerScore = calculateTotalValue(playerHand);
+    const dealerScore = calculateTotalValue(dealerHand);
     const totalBet = calculateTotalBet(placedChips);
     let winnings: number;
     if (playerScore > dealerScore) {
-      if (playerScore == 21) {
+      if (playerScore == blackjack) {
         setResult(Result.playerBlackJack);
-        winnings = totalBet + totalBet * 1.5;
+        winnings = totalBet + totalBet * blackjackMultiplier;
         setBank((prevBank) => prevBank + winnings);
       } else {
         setResult(Result.playerWin);
         winnings = totalBet + totalBet;
         setBank((prevBank) => prevBank + winnings);
       }
-    } else if (dealerScore > 21) {
+    } else if (dealerScore > blackjack) {
       setResult(Result.dealerBust);
       winnings = totalBet + totalBet;
       setBank((prevBank) => prevBank + winnings);

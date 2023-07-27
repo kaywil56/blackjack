@@ -27,9 +27,9 @@ enum Result {
 
 function App() {
   const dealerStandsAt = 17;
-  const startingBank = 250
-  const blackjack = 21
-  const blackjackMultiplier = 1.5
+  const startingBank = 250;
+  const blackjack = 21;
+  const blackjackMultiplier = 1.5;
 
   const [playerHand, setPlayerHand] = useState<ICard[]>([]);
   const [dealerHand, setDealerHand] = useState<ICard[]>([]);
@@ -43,7 +43,10 @@ function App() {
   useEffect(() => {
     if (gameState === GameState.dealerTurn) {
       if (calculateTotalValue(dealerHand) >= dealerStandsAt) {
-        if (hasAnAce(dealerHand) && calculateTotalValue(dealerHand) > blackjack) {
+        if (
+          hasAnAce(dealerHand) &&
+          calculateTotalValue(dealerHand) > blackjack
+        ) {
           const updatedDealerHand = [...dealerHand];
           const aceIdx = updatedDealerHand.findIndex(
             (card) => card.rank === "A"
@@ -243,30 +246,36 @@ function App() {
 
   if (gameState === GameState.bet) {
     return (
-      <Bet
-        bank={bank}
-        setBank={setBank}
-        placeBet={placeBet}
-        placedChips={placedChips}
-        setPlacedChips={setPlacedChips}
-      />
+      <>
+        <h2 id="bank">Bank: {bank}</h2>
+        <Bet
+          bank={bank}
+          setBank={setBank}
+          placeBet={placeBet}
+          placedChips={placedChips}
+          setPlacedChips={setPlacedChips}
+        />
+      </>
     );
   }
 
   return (
     <>
-      <Hand cards={dealerHand} gameState={gameState} />
-      <p>Dealer count: {calculateTotalValue(dealerHand)}</p>
-      <PlayerControls
-        hit={hit}
-        stand={stand}
-        isPlayerTurn={gameState === GameState.playerTurn}
-      />
-      <p>Player count: {calculateTotalValue(playerHand)}</p>
-      <Hand cards={playerHand} gameState={gameState} />
-      {gameState === GameState.showResults && (
-        <Results result={result} setGameState={setGameState} />
-      )}
+      <h2 id="bank">Bank: {bank}</h2>
+      <main>
+        <Hand cards={dealerHand} gameState={gameState} />
+        <p>Dealer count: {calculateTotalValue(dealerHand)}</p>
+        <PlayerControls
+          hit={hit}
+          stand={stand}
+          isPlayerTurn={gameState === GameState.playerTurn}
+        />
+        <p>Player count: {calculateTotalValue(playerHand)}</p>
+        <Hand cards={playerHand} gameState={gameState} />
+        {gameState === GameState.showResults && (
+          <Results result={result} setGameState={setGameState} />
+        )}
+      </main>
     </>
   );
 }

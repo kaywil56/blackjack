@@ -7,10 +7,29 @@
   row-gap: 10px;
   list-style: none;
   padding: 0;
+  margin: 0 auto;
 }
 
 #placed-chips {
   list-style: none;
   padding: 0;
   position: relative;
+}
+
+#bet-area{
+  box-shadow: 10px 10px 54px -1px rgba(0, 0, 0, 0.75);
+  -webkit-box-shadow: 10px 10px 54px -1px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 10px 10px 54px -1px rgba(0, 0, 0, 0.75);
+  background-color: rgb(121, 121, 121);
+  padding: 10px;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+#bet{
+    color: white;
+    margin: 20px;
+    text-transform: uppercase;
 }

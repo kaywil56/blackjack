@@ -52,9 +52,8 @@ const Bet = ({
 
   return (
     <div id="bet-area">
-      <p>Bank: {bank}</p>
       <div id="placed-chips-area">
-        <p>Bet: {calculateTotalBet(placedChips)}</p>
+        <h3 id="bet">Bet: {calculateTotalBet(placedChips)}</h3>
         <ul id="placed-chips">
           {placedChips.map((chip, idx) => {
             return (
@@ -72,7 +71,6 @@ const Bet = ({
           </>
         ))}
       </ul>
-
       <button disabled={placedChips.length === 0} onClick={placeBet}>
         Place bet
       </button>
